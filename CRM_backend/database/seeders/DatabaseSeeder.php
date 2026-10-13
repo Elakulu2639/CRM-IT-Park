@@ -15,11 +15,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            RoleSeeder::class,
         ]);
+
+        $adminRole = \App\Models\Role::where('role_name', 'System Administrator')->first();
+
+        if ($adminRole) {
+            User::firstOrCreate(
+                ['email' => 'admin@crm-itpark.com'],
+                [
+                    'role_id' => $adminRole->id,
+                    'first_name' => 'Admin',
+                    'last_name' => 'User',
+                    'password' => bcrypt('password123'),
+                    'status' => 'active',
+                ]
+            );
+        }
     }
 }
