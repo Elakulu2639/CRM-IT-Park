@@ -1,0 +1,40 @@
+export interface Role {
+  id: number;
+  role_name: string;
+  description: string | null;
+  role_tier: number | null;
+}
+
+export interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  status: 'active' | 'deactivated' | 'suspended';
+  last_login_at: string | null;
+  created_at?: string;
+  role?: Role;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+  remember?: boolean;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    token: string;
+    token_type: string;
+    user: User;
+  };
+}
+
+export interface ApiError {
+  message: string;
+  errors?: Record<string, string[]>;
+}

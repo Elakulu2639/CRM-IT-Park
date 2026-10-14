@@ -1,14 +1,36 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './store/AuthContext';
+import ProtectedRoute from './routes/ProtectedRoute';
+import PublicRoute from './routes/PublicRoute';
+import LoginPage from './features/auth/LoginPage';
+import DashboardPage from './features/dashboard/DashboardPage';
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
-      <div className="text-center p-8 bg-white rounded-xl shadow-sm border border-slate-200 max-w-md w-full">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-800">
-          CRM IT-Park
-        </h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Frontend initialized with clean architecture and Tailwind CSS.
-        </p>
-      </div>
-    </div>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public Routes (Accessible only when logged out) */}
+          <Route element={<PublicRoute />}>
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
+
+          {/* Protected Routes (Require active authenticated session) */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            {/* Fallback routes for navigation placeholders */}
+            <Route path="/leads" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/accounts" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/contacts" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/opportunities" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/tickets" element={<Navigate to="/dashboard" replace />} />
+          </Route>
+
+          {/* Root & Catch-all Redirects */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
