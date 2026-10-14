@@ -8,12 +8,15 @@ This directory is structured so that you can **import the entire `Postman` folde
 
 ```text
 tests/Postman/
-├── CRM.postman_collection.json                <-- Father collection (CRM) containing all controller folders
+├── CRM.postman_collection.json                <-- Auto-generated father collection (DO NOT EDIT MANUALLY)
 ├── CRM_Environment.postman_environment.json   <-- Common environment file (baseUrl, token)
 ├── bundle.php                                 <-- Auto-bundler for controller endpoints
 │
 ├── Auth/                                      <-- AuthController folder
 │   └── endpoints.json                         <-- Pure endpoints for Auth (no CRM wrapper needed!)
+│
+├── Users/                                     <-- UserController + RoleController folder
+│   └── endpoints.json                         <-- User & Role Management endpoints (9 endpoints)
 │
 ├── Leads/                                     <-- (Future) LeadController folder
 │   └── endpoints.json
@@ -21,6 +24,13 @@ tests/Postman/
 └── Tickets/                                   <-- (Future) TicketController folder
     └── endpoints.json
 ```
+
+> [!IMPORTANT]
+> **You never edit `CRM.postman_collection.json` manually.** It gets regenerated every time you run:
+> ```bash
+> docker exec crm_backend php tests/Postman/bundle.php
+> ```
+> Always add or edit endpoints inside each controller's `endpoints.json` (e.g. `Users/endpoints.json`, `Auth/endpoints.json`). Any manual edits made directly to `CRM.postman_collection.json` will be overwritten whenever the bundler runs.
 
 ---
 
