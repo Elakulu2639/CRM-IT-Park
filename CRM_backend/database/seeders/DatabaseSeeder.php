@@ -32,14 +32,14 @@ class DatabaseSeeder extends Seeder
             ['description' => 'Support / CRM Agent', 'role_tier' => 3, 'is_active' => true]
         );
 
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@itpark.gov.et'],
             [
                 'role_id' => $adminRole->id,
                 'first_name' => 'System',
                 'last_name' => 'Admin',
                 'phone' => '+251911000000',
-                'password' => Hash::make('password'),
+                'password' => 'password',
                 'status' => 'active',
                 'email_verified_at' => now(),
             ]
