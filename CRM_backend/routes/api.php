@@ -34,10 +34,8 @@ Route::middleware(['auth:sanctum', 'role:System Administrator'])->group(function
     Route::prefix('users')->group(function () {
         Route::get('/',                          [UserController::class, 'index']);       // View Users
         Route::post('/',                         [UserController::class, 'store']);       // Create User
-        Route::get('/{user}',                    [UserController::class, 'show']);        // View User
         Route::put('/{user}',                    [UserController::class, 'update']);      // Edit User
-        Route::post('/{user}/activate',          [UserController::class, 'activate']);    // Activate User
-        Route::post('/{user}/deactivate',        [UserController::class, 'deactivate']); // Deactivate User (+ reassign)
+        Route::patch('/{user}/status',           [UserController::class, 'updateStatus']); // Update User Status (active/inactive)
         Route::put('/{user}/role',               [UserController::class, 'assignRole']); // Assign / Change Role
     });
 

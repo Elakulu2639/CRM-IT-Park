@@ -1,6 +1,6 @@
 [
 	{
-		"name": "POST Login",
+		"name": "Login",
 		"event": [
 			{
 				"listen": "test",
@@ -60,7 +60,7 @@
 		"response": []
 	},
 	{
-		"name": "GET Me",
+		"name": "Me",
 		"event": [
 			{
 				"listen": "test",
@@ -114,7 +114,7 @@
 		"response": []
 	},
 	{
-		"name": "POST Logout",
+		"name": "Logout",
 		"event": [
 			{
 				"listen": "test",
