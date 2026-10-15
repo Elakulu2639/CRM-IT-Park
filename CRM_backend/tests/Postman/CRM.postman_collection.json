@@ -11,7 +11,7 @@
             "description": "Endpoints for Auth Controller",
             "item": [
                 {
-                    "name": "POST Login",
+                    "name": "Login",
                     "event": [
                         {
                             "listen": "test",
@@ -71,7 +71,7 @@
                     "response": []
                 },
                 {
-                    "name": "GET Me",
+                    "name": "Me",
                     "event": [
                         {
                             "listen": "test",
@@ -125,7 +125,7 @@
                     "response": []
                 },
                 {
-                    "name": "POST Logout",
+                    "name": "Logout",
                     "event": [
                         {
                             "listen": "test",
@@ -187,7 +187,7 @@
             "description": "Endpoints for Users Controller",
             "item": [
                 {
-                    "name": "GET List Users",
+                    "name": "List Users",
                     "event": [
                         {
                             "listen": "test",
@@ -244,7 +244,7 @@
                     "response": []
                 },
                 {
-                    "name": "POST Create User",
+                    "name": "Create User",
                     "event": [
                         {
                             "listen": "test",
@@ -312,61 +312,7 @@
                     "response": []
                 },
                 {
-                    "name": "GET Show User",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Returns user profile with role\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.success).to.be.true;",
-                                    "    pm.expect(jsonData.data.user).to.be.an('object');",
-                                    "    pm.expect(jsonData.data.user.role).to.be.an('object');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{baseUrl}}/users/{{new_user_id}}",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users",
-                                "{{new_user_id}}"
-                            ]
-                        },
-                        "description": "Returns a single user profile including status and role. Requires System Administrator role."
-                    },
-                    "response": []
-                },
-                {
-                    "name": "PUT Edit User",
+                    "name": "Edit User",
                     "event": [
                         {
                             "listen": "test",
@@ -379,7 +325,7 @@
                                     "pm.test(\"User updated successfully\", function () {",
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData.success).to.be.true;",
-                                    "    pm.expect(jsonData.data.user.phone).to.eql('+251900000001');",
+                                    "    pm.expect(jsonData.data.user).to.be.an('object');",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -410,7 +356,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"phone\": \"+251900000001\"\n}",
+                            "raw": "{\n  \"role_id\": 2,\n  \"first_name\": \"Dawit Updated\",\n  \"last_name\": \"Tesfaye\",\n  \"email\": \"dawit.updated@itpark.gov.et\",\n  \"phone\": \"+251900000001\",\n  \"status\": \"active\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -418,21 +364,102 @@
                             }
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/users/{{new_user_id}}",
+                            "raw": "{{baseUrl}}/users/{{user_id}}",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "users",
-                                "{{new_user_id}}"
+                                "{{user_id}}"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "user_id",
+                                    "value": "{{new_user_id}}",
+                                    "description": "ID of the user to edit (change to edit any user)"
+                                }
                             ]
                         },
-                        "description": "Updates user profile fields. Requires System Administrator role."
+                        "description": "Updates any user information (first_name, last_name, email, phone, role_id, status, password) by specifying user ID in the path. Requires System Administrator role."
                     },
                     "response": []
                 },
                 {
-                    "name": "PUT Assign / Change Role",
+                    "name": "Change User Status",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"User status updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data.user.status).to.eql('inactive');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"inactive\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{user_id}}/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{user_id}}",
+                                "status"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "user_id",
+                                    "value": "{{new_user_id}}",
+                                    "description": "ID of the user whose status to toggle"
+                                }
+                            ]
+                        },
+                        "description": "Updates user status to either 'active' or 'inactive'. Revokes tokens when deactivating. Requires System Administrator role."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Assign / Change Role",
                     "event": [
                         {
                             "listen": "test",
@@ -484,14 +511,21 @@
                             }
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/users/{{new_user_id}}/role",
+                            "raw": "{{baseUrl}}/users/{{user_id}}/role",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "users",
-                                "{{new_user_id}}",
+                                "{{user_id}}",
                                 "role"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "user_id",
+                                    "value": "{{new_user_id}}",
+                                    "description": "ID of the user whose role to update"
+                                }
                             ]
                         },
                         "description": "Assigns or changes the role of a user. Requires System Administrator role."
@@ -499,196 +533,7 @@
                     "response": []
                 },
                 {
-                    "name": "POST Deactivate User",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"User deactivated, status is inactive\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.success).to.be.true;",
-                                    "    pm.expect(jsonData.data.user.status).to.eql('inactive');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/users/{{new_user_id}}/deactivate",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users",
-                                "{{new_user_id}}",
-                                "deactivate"
-                            ]
-                        },
-                        "description": "Deactivates user without deleting data. Optionally pass reassign_to to transfer owned records. Requires System Administrator role."
-                    },
-                    "response": []
-                },
-                {
-                    "name": "POST Deactivate User (with Reassignment)",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"User deactivated and records reassigned\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.success).to.be.true;",
-                                    "    pm.expect(jsonData.data.user.status).to.eql('inactive');",
-                                    "    pm.expect(jsonData.message).to.include('reassigned');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"reassign_to\": 1\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/users/{{new_user_id}}/deactivate",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users",
-                                "{{new_user_id}}",
-                                "deactivate"
-                            ]
-                        },
-                        "description": "Deactivates user and reassigns all owned records to the specified user ID. Requires System Administrator role."
-                    },
-                    "response": []
-                },
-                {
-                    "name": "POST Activate User",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"User activated, status is active\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.success).to.be.true;",
-                                    "    pm.expect(jsonData.data.user.status).to.eql('active');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{baseUrl}}/users/{{new_user_id}}/activate",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users",
-                                "{{new_user_id}}",
-                                "activate"
-                            ]
-                        },
-                        "description": "Re-activates an inactive user account. Requires System Administrator role."
-                    },
-                    "response": []
-                },
-                {
-                    "name": "GET List Roles",
+                    "name": "List Roles",
                     "event": [
                         {
                             "listen": "test",

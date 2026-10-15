@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\AssignRoleRequest;
 use App\Http\Requests\User\CreateUserRequest;
-use App\Http\Requests\User\DeactivateUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\User\UpdateUserStatusRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
@@ -33,20 +33,6 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
-    /**
-     * Show a single user's full profile including role.
-     *
-     * Authorized role: System Administrator
-     */
-    public function show(User $user): JsonResponse
-    {
-        $user->load('role');
-
-        return response()->json([
-            'success' => true,
-            'data'    => ['user' => new UserResource($user)],
-        ]);
-    }
 
     /**
      * Create a new CRM user and assign a role.
@@ -81,68 +67,34 @@ class UserController extends Controller
     }
 
     /**
-     * Activate an inactive user account.
+     * Update user account status (active or inactive).
      *
      * Authorized role: System Administrator
      */
-    public function activate(User $user): JsonResponse
+    public function updateStatus(UpdateUserStatusRequest $request, User $user): JsonResponse
     {
-        if ($user->status === 'active') {
+        $status = $request->validated('status');
+
+        if ($user->status === $status) {
             return response()->json([
                 'success' => false,
-                'message' => 'User account is already active.',
+                'message' => "User account is already {$status}.",
             ], 422);
         }
 
-        $user = $this->userService->activateUser($user);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User account activated successfully.',
-            'data'    => ['user' => new UserResource($user)],
-        ]);
-    }
-
-    /**
-     * Deactivate a user account without deleting historical data.
-     *
-     * Accepts an optional `reassign_to` field: the ID of the active user who
-     * should receive all records previously owned by the deactivated user.
-     *
-     * Authorized role: System Administrator
-     */
-    public function deactivate(DeactivateUserRequest $request, User $user): JsonResponse
-    {
-        if ($user->status === 'inactive') {
-            return response()->json([
-                'success' => false,
-                'message' => 'User account is already inactive.',
-            ], 422);
-        }
-
-        // Prevent an administrator from accidentally deactivating their own account.
-        if ($user->id === $request->user()->id) {
+        // Prevent an administrator from deactivating their own account.
+        if ($status === 'inactive' && $user->id === $request->user()->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'You cannot deactivate your own account.',
             ], 422);
         }
 
-        $reassignToUserId = $request->input('reassign_to');
-
-        // Ensure the reassignment target is not the same user being deactivated.
-        if ($reassignToUserId !== null && (int) $reassignToUserId === $user->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'The reassignment target cannot be the same user being deactivated.',
-            ], 422);
-        }
-
-        $user = $this->userService->deactivateUser($user, $reassignToUserId ? (int) $reassignToUserId : null);
+        $user = $this->userService->setStatus($user, $status);
 
         return response()->json([
             'success' => true,
-            'message' => 'User account deactivated successfully.' . ($reassignToUserId ? ' Owned records have been reassigned.' : ''),
+            'message' => "User account status updated to {$status} successfully.",
             'data'    => ['user' => new UserResource($user)],
         ]);
     }
