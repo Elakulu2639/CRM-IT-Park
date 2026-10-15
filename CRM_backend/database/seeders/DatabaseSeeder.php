@@ -12,14 +12,29 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Seed the application's database.
+     *
+     * Roles are seeded via RoleSeeder, which uses the canonical role names
+     * (e.g. "System Administrator") that the CheckRole middleware matches against.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Seed all four canonical CRM roles first.
+        $this->call(RoleSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // 2. Seed the default System Administrator user.
+        $adminRole = \App\Models\Role::where('role_name', 'System Administrator')->first();
+
+        User::updateOrCreate(
+            ['email' => 'admin@itpark.gov.et'],
+            [
+                'role_id'            => $adminRole->id,
+                'first_name'         => 'System',
+                'last_name'          => 'Admin',
+                'phone'              => '+251911000000',
+                'password'           => 'password',
+                'status'             => 'active',
+                'email_verified_at'  => now(),
+            ]
+        );
     }
 }
