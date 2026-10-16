@@ -1,0 +1,62 @@
+meta {
+  name: Change Pipeline Stage Status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/pipeline-stages/:stage_id/status
+  body: json
+  auth: bearer
+}
+
+params:path {
+  stage_id: {{stage_id}}
+}
+
+script:pre-request {
+  try {
+    if (typeof bru.deleteVar === 'function') {
+      bru.deleteVar("stage_id");
+    }
+    let pathId = null;
+    if (typeof req.getPathVar === 'function') {
+      pathId = req.getPathVar("stage_id");
+    } else if (typeof req.getPathVariable === 'function') {
+      pathId = req.getPathVariable("stage_id");
+    } else if (req.pathVariables && req.pathVariables.stage_id) {
+      pathId = req.pathVariables.stage_id;
+    }
+    if (pathId && !pathId.toString().includes("{{")) {
+      bru.setEnvVar("stage_id", pathId);
+    }
+  } catch (e) {}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "is_active": false
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Stage status changed successfully", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.stage).to.be.an('object');
+    expect(data.data.stage).to.have.property('is_active');
+  });
+}

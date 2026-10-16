@@ -1,0 +1,52 @@
+meta {
+  name: Create User
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/users
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "role_id": 2,
+    "first_name": "Dawit",
+    "last_name": "Tesfaye",
+    "email": "dawit.tesfaye@itpark.gov.et",
+    "password": "password",
+    "password_confirmation": "password",
+    "phone": "+251912345678"
+  }
+}
+
+tests {
+  test("Status code is 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("User created with correct role", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.user.email).to.be.a('string');
+    expect(data.data.user.status).to.equal('active');
+    expect(data.data.user.role).to.be.an('object');
+    if (data.data && data.data.user && data.data.user.id) {
+      if (typeof bru.deleteVar === 'function') {
+        bru.deleteVar("user_id");
+      }
+      bru.setEnvVar("user_id", data.data.user.id);
+    }
+  });
+}

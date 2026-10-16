@@ -1,0 +1,61 @@
+meta {
+  name: Assign - Change Role
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/users/:user_id/role
+  body: json
+  auth: bearer
+}
+
+params:path {
+  user_id: {{user_id}}
+}
+
+script:pre-request {
+  try {
+    if (typeof bru.deleteVar === 'function') {
+      bru.deleteVar("user_id");
+    }
+    let pathId = null;
+    if (typeof req.getPathVar === 'function') {
+      pathId = req.getPathVar("user_id");
+    } else if (typeof req.getPathVariable === 'function') {
+      pathId = req.getPathVariable("user_id");
+    } else if (req.pathVariables && req.pathVariables.user_id) {
+      pathId = req.pathVariables.user_id;
+    }
+    if (pathId && !pathId.toString().includes("{{")) {
+      bru.setEnvVar("user_id", pathId);
+    }
+  } catch (e) {}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "role_id": 3
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Role assigned to user", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.user.role).to.be.an('object');
+  });
+}

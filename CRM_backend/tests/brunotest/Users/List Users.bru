@@ -1,0 +1,35 @@
+meta {
+  name: List Users
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Returns array of users with roles", function () {
+    const data = res.getBody();
+    expect(data.data).to.be.an('array');
+    if (data.data.length > 0) {
+      expect(data.data[0]).to.have.property('id');
+      expect(data.data[0]).to.have.property('status');
+      expect(data.data[0]).to.have.property('role');
+    }
+  });
+}
