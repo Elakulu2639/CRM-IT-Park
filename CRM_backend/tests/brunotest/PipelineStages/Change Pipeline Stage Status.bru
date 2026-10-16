@@ -1,0 +1,39 @@
+meta {
+  name: Change Pipeline Stage Status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/pipeline-stages/{{stage_id}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "is_active": false
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Stage status changed successfully", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.stage).to.be.an('object');
+    expect(data.data.stage).to.have.property('is_active');
+  });
+}

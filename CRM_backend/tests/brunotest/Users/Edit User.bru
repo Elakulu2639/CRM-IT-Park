@@ -1,0 +1,43 @@
+meta {
+  name: Edit User
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/users/{{user_id}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "role_id": 2,
+    "first_name": "Dawit Updated",
+    "last_name": "Tesfaye",
+    "email": "dawit.updated@itpark.gov.et",
+    "phone": "+251900000001",
+    "status": "active"
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("User updated successfully", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.user).to.be.an('object');
+  });
+}

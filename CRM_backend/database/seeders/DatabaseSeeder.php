@@ -21,7 +21,10 @@ class DatabaseSeeder extends Seeder
         // 1. Seed all four canonical CRM roles first.
         $this->call(RoleSeeder::class);
 
-        // 2. Seed the default System Administrator user.
+        // 2. Seed the default SRS pipeline stages (New → Closed Lost).
+        $this->call(PipelineStageSeeder::class);
+
+        // 3. Seed the default System Administrator user.
         $adminRole = \App\Models\Role::where('role_name', 'System Administrator')->first();
 
         User::updateOrCreate(

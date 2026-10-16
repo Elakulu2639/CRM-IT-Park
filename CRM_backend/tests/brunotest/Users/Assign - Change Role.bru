@@ -1,0 +1,38 @@
+meta {
+  name: Assign - Change Role
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/users/{{user_id}}/role
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "role_id": 3
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Role assigned to user", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.user.role).to.be.an('object');
+  });
+}

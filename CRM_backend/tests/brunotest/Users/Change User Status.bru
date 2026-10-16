@@ -1,0 +1,38 @@
+meta {
+  name: Change User Status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/users/{{user_id}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "status": "inactive"
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("User status updated successfully", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.user.status).to.equal('inactive');
+  });
+}

@@ -1,0 +1,40 @@
+meta {
+  name: Edit Pipeline Stage
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/pipeline-stages/{{stage_id}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "stage_name": "Technical & Security Review",
+    "display_order": 4
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Stage updated successfully", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.stage).to.be.an('object');
+    expect(data.data.stage.stage_name).to.equal('Technical & Security Review');
+  });
+}
