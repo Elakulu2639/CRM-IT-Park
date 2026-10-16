@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TicketPriority;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
     /**
  * @property int $id
- * @property string $priority
+ * @property TicketPriority $priority
  * @property int $reminder_threshold_minutes
  * @property int $escalation_threshold_minutes
  * @property string $time_basis
@@ -37,4 +38,10 @@ class EscalationPolicy extends Model
 
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'priority' => TicketPriority::class,
+        ];
+    }
 }

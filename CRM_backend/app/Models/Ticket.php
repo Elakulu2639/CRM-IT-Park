@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TicketPriority;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $contact_id
  * @property int|null $assignee_user_id
  * @property int $category_id
- * @property string $priority
+ * @property TicketPriority $priority
  * @property string $status
  * @property string $subject
  * @property string|null $description
@@ -56,4 +57,10 @@ class Ticket extends Model
     use SoftDeletes;
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'priority' => TicketPriority::class,
+        ];
+    }
 }

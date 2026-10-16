@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\TicketPriority;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ return new class extends Migration
             $table->foreignId('contact_id')->nullable()->constrained('contacts');
             $table->foreignId('assignee_user_id')->nullable()->constrained('users');
             $table->foreignId('category_id')->constrained('ticket_categories');
-            $table->string('priority', 20)->default('Medium');
+            $table->enum('priority', TicketPriority::values())->default(TicketPriority::MEDIUM->value);
             $table->string('status', 30)->default('open');
             $table->string('subject', 255);
             $table->text('description')->nullable();
