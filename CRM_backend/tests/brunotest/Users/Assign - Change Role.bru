@@ -16,6 +16,9 @@ params:path {
 
 script:pre-request {
   try {
+    if (typeof bru.deleteVar === 'function') {
+      bru.deleteVar("user_id");
+    }
     let pathId = null;
     if (typeof req.getPathVar === 'function') {
       pathId = req.getPathVar("user_id");
@@ -25,7 +28,6 @@ script:pre-request {
       pathId = req.pathVariables.user_id;
     }
     if (pathId && !pathId.toString().includes("{{")) {
-      bru.setVar("user_id", pathId);
       bru.setEnvVar("user_id", pathId);
     }
   } catch (e) {}

@@ -42,7 +42,9 @@ tests {
     expect(data.data.stage.is_closed_won).to.be.false;
     expect(data.data.stage.is_closed_lost).to.be.false;
     if (data.data && data.data.stage && data.data.stage.id) {
-      bru.setVar("stage_id", data.data.stage.id);
+      if (typeof bru.deleteVar === 'function') {
+        bru.deleteVar("stage_id");
+      }
       bru.setEnvVar("stage_id", data.data.stage.id);
     }
   });

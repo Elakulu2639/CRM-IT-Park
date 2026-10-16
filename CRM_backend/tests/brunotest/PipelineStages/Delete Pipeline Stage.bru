@@ -16,6 +16,9 @@ params:path {
 
 script:pre-request {
   try {
+    if (typeof bru.deleteVar === 'function') {
+      bru.deleteVar("stage_id");
+    }
     let pathId = null;
     if (typeof req.getPathVar === 'function') {
       pathId = req.getPathVar("stage_id");
@@ -25,7 +28,6 @@ script:pre-request {
       pathId = req.pathVariables.stage_id;
     }
     if (pathId && !pathId.toString().includes("{{")) {
-      bru.setVar("stage_id", pathId);
       bru.setEnvVar("stage_id", pathId);
     }
   } catch (e) {}
