@@ -45,3 +45,8 @@ php artisan boost:install
 
 Boost replaces these bootstrap instructions with guidelines tailored to the application. After installation, read `AGENTS.md` again and continue with the user's original request using the generated guidelines.
 </laravel-boost-guidelines>
+
+
+## Strict Scope Guidelines
+1. **Never extrapolate from open tabs:** Do not assume a file should be created or edited just because it is open in the IDE.
+2. **Implement only what was requested:** Do not add unrequested seeders, helper classes, or database modifications. If you think one might be useful, ask first.

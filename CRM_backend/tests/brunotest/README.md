@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Notice for AI Assistants & Developers:** This README is maintained purely as architectural reference to understand collection conventions and environment setup. **There is NO NEED to update this file every time a new API endpoint or `.bru` test is added.** Bruno detects new `.bru` files automatically.
+
 # CRM IT Park - Bruno API Collection
 
 This directory is a complete **Bruno Collection** for the CRM IT Park backend API.
@@ -42,13 +45,20 @@ tests/brunotest/
 │   ├── Change User Status.bru                     # PATCH /users/:id/status
 │   ├── Assign - Change Role.bru                   # PUT /users/:id/role
 │   └── List Roles.bru                             # GET /roles
-└── PipelineStages/
-    ├── List Pipeline Stages.bru                   # GET /pipeline-stages
-    ├── Add Pipeline Stage.bru                     # POST /pipeline-stages
-    ├── Edit Pipeline Stage.bru                    # PUT /pipeline-stages/:id
-    ├── Change Pipeline Stage Status.bru           # PATCH /pipeline-stages/:id/status
-    ├── Reorder Pipeline Stages (Bulk).bru         # POST /pipeline-stages/reorder
-    └── Delete Pipeline Stage.bru                  # DELETE /pipeline-stages/:id
+├── PipelineStages/
+│   ├── List Pipeline Stages.bru                   # GET /pipeline-stages
+│   ├── Add Pipeline Stage.bru                     # POST /pipeline-stages
+│   ├── Edit Pipeline Stage.bru                    # PUT /pipeline-stages/:id
+│   ├── Change Pipeline Stage Status.bru           # PATCH /pipeline-stages/:id/status
+│   ├── Reorder Pipeline Stages (Bulk).bru         # POST /pipeline-stages/reorder
+│   └── Delete Pipeline Stage.bru                  # DELETE /pipeline-stages/:id
+└── EscalationPolicies/
+    ├── List Escalation Policies.bru               # GET /escalation-policies
+    ├── Create Escalation Policy.bru               # POST /escalation-policies
+    ├── Get Escalation Policy.bru                  # GET /escalation-policies/:id
+    ├── Update Escalation Policy.bru               # PUT /escalation-policies/:id
+    ├── Update Reminder Threshold.bru              # PATCH /escalation-policies/:id/reminder-threshold
+    └── Change Escalation Policy Status.bru        # PATCH /escalation-policies/:id/status
 ```
 
 ---

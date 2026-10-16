@@ -1,0 +1,63 @@
+meta {
+  name: Update Reminder Threshold
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/escalation-policies/:policy_id/reminder-threshold
+  body: json
+  auth: bearer
+}
+
+params:path {
+  policy_id: {{policy_id}}
+}
+
+script:pre-request {
+  try {
+    if (typeof bru.deleteVar === 'function') {
+      bru.deleteVar("policy_id");
+    }
+    let pathId = null;
+    if (typeof req.getPathVar === 'function') {
+      pathId = req.getPathVar("policy_id");
+    } else if (typeof req.getPathVariable === 'function') {
+      pathId = req.getPathVariable("policy_id");
+    } else if (req.pathVariables && req.pathVariables.policy_id) {
+      pathId = req.pathVariables.policy_id;
+    }
+    if (pathId && !pathId.toString().includes("{{")) {
+      bru.setEnvVar("policy_id", pathId);
+    }
+  } catch (e) {}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "reminder_threshold_minutes": 720
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Reminder threshold updated to 720 minutes", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.policy).to.be.an('object');
+    expect(data.data.policy.reminder_threshold_minutes).to.equal(720);
+    expect(data.data.policy.reminder_threshold_minutes).to.be.below(data.data.policy.escalation_threshold_minutes);
+  });
+}

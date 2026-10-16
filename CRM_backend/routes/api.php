@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\EscalationPolicyController;
 use App\Http\Controllers\Api\PipelineStageController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
@@ -66,6 +67,19 @@ Route::middleware(['auth:sanctum', 'role:System Administrator'])->group(function
         Route::patch('/{stage}/status', [PipelineStageController::class, 'toggleStatus']); // Activate / Deactivate
         Route::post('/reorder',         [PipelineStageController::class, 'reorder']);      // Bulk reorder
         Route::delete('/{stage}',       [PipelineStageController::class, 'destroy']);      // Delete (blocked if opportunities exist)
+    });
+
+    // ------------------------------------------------------------------
+    // Escalation Policies & Ticket Reminder Thresholds
+    // ------------------------------------------------------------------
+    Route::prefix('escalation-policies')->group(function () {
+        Route::get('/',                                         [EscalationPolicyController::class, 'index']);                   // View all policies / thresholds
+        Route::post('/',                                        [EscalationPolicyController::class, 'store']);                   // Create / configure policy threshold
+        Route::get('/{escalation_policy}',                      [EscalationPolicyController::class, 'show']);                    // View single policy
+        Route::put('/{escalation_policy}',                      [EscalationPolicyController::class, 'update']);                  // Update policy configuration
+        Route::patch('/{escalation_policy}/reminder-threshold', [EscalationPolicyController::class, 'updateReminderThreshold']); // Update reminder threshold specifically
+        Route::patch('/{escalation_policy}/status',             [EscalationPolicyController::class, 'toggleStatus']);            // Activate / deactivate policy
+        Route::delete('/{escalation_policy}',                   [EscalationPolicyController::class, 'destroy']);                 // Delete policy (if no history)
     });
 });
 

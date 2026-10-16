@@ -1,0 +1,53 @@
+meta {
+  name: Create Escalation Policy
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/escalation-policies
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "priority": "Medium",
+    "reminder_threshold_minutes": 1440,
+    "escalation_threshold_minutes": 2880,
+    "time_basis": "calendar",
+    "is_active": true
+  }
+}
+
+tests {
+  test("Status code is 201 or 422 if already exists", function () {
+    expect([201, 422]).to.include(res.getStatus());
+  });
+  
+  if (res.getStatus() === 201) {
+    test("Policy created successfully", function () {
+      const data = res.getBody();
+      expect(data.success).to.be.true;
+      expect(data.data.policy).to.be.an('object');
+      expect(data.data.policy.priority).to.equal('Medium');
+      expect(data.data.policy.reminder_threshold_minutes).to.equal(1440);
+      expect(data.data.policy.escalation_threshold_minutes).to.equal(2880);
+      if (data.data && data.data.policy && data.data.policy.id) {
+        if (typeof bru.deleteVar === 'function') {
+          bru.deleteVar("policy_id");
+        }
+        bru.setEnvVar("policy_id", data.data.policy.id);
+      }
+    });
+  }
+}
