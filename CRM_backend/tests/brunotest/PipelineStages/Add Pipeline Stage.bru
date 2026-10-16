@@ -1,0 +1,51 @@
+meta {
+  name: Add Pipeline Stage
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/pipeline-stages
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "stage_name": "Technical Review",
+    "display_order": 4,
+    "is_closed_won": false,
+    "is_closed_lost": false
+  }
+}
+
+tests {
+  test("Status code is 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Stage created successfully", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.stage).to.be.an('object');
+    expect(data.data.stage.stage_name).to.equal('Technical Review');
+    expect(data.data.stage.is_active).to.be.true;
+    expect(data.data.stage.is_closed_won).to.be.false;
+    expect(data.data.stage.is_closed_lost).to.be.false;
+    if (data.data && data.data.stage && data.data.stage.id) {
+      if (typeof bru.deleteVar === 'function') {
+        bru.deleteVar("stage_id");
+      }
+      bru.setEnvVar("stage_id", data.data.stage.id);
+    }
+  });
+}

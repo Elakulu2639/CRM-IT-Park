@@ -1,0 +1,47 @@
+meta {
+  name: List Pipeline Stages
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/pipeline-stages
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~active_only: true
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Returns array of pipeline stages", function () {
+    const data = res.getBody();
+    expect(data.data).to.be.an('array');
+    if (data.data.length > 0) {
+      expect(data.data[0]).to.have.property('id');
+      expect(data.data[0]).to.have.property('stage_name');
+      expect(data.data[0]).to.have.property('display_order');
+      expect(data.data[0]).to.have.property('is_active');
+    }
+  });
+  
+  test("Stages are sorted by display_order ascending", function () {
+    const data = res.getBody().data;
+    for (let i = 1; i < data.length; i++) {
+      expect(data[i].display_order).to.be.at.least(data[i - 1].display_order);
+    }
+  });
+}

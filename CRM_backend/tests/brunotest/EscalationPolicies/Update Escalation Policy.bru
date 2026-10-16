@@ -1,0 +1,65 @@
+meta {
+  name: Update Escalation Policy
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/escalation-policies/:policy_id
+  body: json
+  auth: bearer
+}
+
+params:path {
+  policy_id: {{policy_id}}
+}
+
+script:pre-request {
+  try {
+    if (typeof bru.deleteVar === 'function') {
+      bru.deleteVar("policy_id");
+    }
+    let pathId = null;
+    if (typeof req.getPathVar === 'function') {
+      pathId = req.getPathVar("policy_id");
+    } else if (typeof req.getPathVariable === 'function') {
+      pathId = req.getPathVariable("policy_id");
+    } else if (req.pathVariables && req.pathVariables.policy_id) {
+      pathId = req.pathVariables.policy_id;
+    }
+    if (pathId && !pathId.toString().includes("{{")) {
+      bru.setEnvVar("policy_id", pathId);
+    }
+  } catch (e) {}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "reminder_threshold_minutes": 1000,
+    "escalation_threshold_minutes": 2500,
+    "time_basis": "calendar"
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Policy updated successfully", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.policy).to.be.an('object');
+    expect(data.data.policy.reminder_threshold_minutes).to.equal(1000);
+    expect(data.data.policy.escalation_threshold_minutes).to.equal(2500);
+  });
+}

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\TicketPriority;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,7 +12,7 @@ return new class extends Migration
         Schema::create('escalation_policies', function (Blueprint $table) {
 
             $table->id();
-            $table->string('priority', 20);
+            $table->enum('priority', TicketPriority::values());
             $table->integer('reminder_threshold_minutes');
             $table->integer('escalation_threshold_minutes');
             $table->string('time_basis', 30)->default('calendar');
