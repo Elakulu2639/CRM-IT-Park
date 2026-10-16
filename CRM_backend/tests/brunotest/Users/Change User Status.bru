@@ -5,9 +5,30 @@ meta {
 }
 
 patch {
-  url: {{baseUrl}}/users/{{user_id}}/status
+  url: {{baseUrl}}/users/:user_id/status
   body: json
   auth: bearer
+}
+
+params:path {
+  user_id: {{user_id}}
+}
+
+script:pre-request {
+  try {
+    let pathId = null;
+    if (typeof req.getPathVar === 'function') {
+      pathId = req.getPathVar("user_id");
+    } else if (typeof req.getPathVariable === 'function') {
+      pathId = req.getPathVariable("user_id");
+    } else if (req.pathVariables && req.pathVariables.user_id) {
+      pathId = req.pathVariables.user_id;
+    }
+    if (pathId && !pathId.toString().includes("{{")) {
+      bru.setVar("user_id", pathId);
+      bru.setEnvVar("user_id", pathId);
+    }
+  } catch (e) {}
 }
 
 auth:bearer {
