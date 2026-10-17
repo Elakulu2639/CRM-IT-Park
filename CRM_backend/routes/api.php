@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EscalationPolicyController;
 use App\Http\Controllers\Api\PipelineStageController;
 use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\TicketCategoryController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -84,6 +85,10 @@ $registerRoutes = function () {
         // Roles Reference — For assignment and filter dropdowns
         Route::get('/roles', [RoleController::class, 'index']);
 
+        // Ticket Categories — Listing & Details (Viewable by authenticated users)
+        Route::get('/ticket-categories',                   [TicketCategoryController::class, 'index']);
+        Route::get('/ticket-categories/{ticket_category}', [TicketCategoryController::class, 'show']);
+
         // User Management (Admin & Manager can view)
         Route::middleware('role:System Administrator,CRM Manager')->group(function () {
             Route::get('/users', [UserController::class, 'index']);
@@ -118,6 +123,13 @@ $registerRoutes = function () {
                 Route::patch('/{escalation_policy}/reminder-threshold', [EscalationPolicyController::class, 'updateReminderThreshold']);
                 Route::patch('/{escalation_policy}/status', [EscalationPolicyController::class, 'toggleStatus']);
                 Route::delete('/{escalation_policy}', [EscalationPolicyController::class, 'destroy']);
+            });
+
+            // Ticket Category Management
+            Route::prefix('ticket-categories')->group(function () {
+                Route::post('/',                    [TicketCategoryController::class, 'store']);
+                Route::put('/{ticket_category}',    [TicketCategoryController::class, 'update']);
+                Route::delete('/{ticket_category}', [TicketCategoryController::class, 'destroy']);
             });
         });
     });

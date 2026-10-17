@@ -1,0 +1,34 @@
+meta {
+  name: List Ticket Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/ticket-categories
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~active_only: true
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Returns ticket categories array", function () {
+    const data = res.getBody();
+    expect(data.data).to.be.an('array');
+  });
+}

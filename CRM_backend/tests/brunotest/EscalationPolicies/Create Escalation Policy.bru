@@ -10,18 +10,18 @@ post {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
-
 headers {
   Content-Type: application/json
   Accept: application/json
 }
 
+auth:bearer {
+  token: {{token}}
+}
+
 body:json {
   {
-    "priority": "Medium",
+    "priority": "Urgent",
     "reminder_threshold_minutes": 1440,
     "escalation_threshold_minutes": 2880,
     "time_basis": "calendar",

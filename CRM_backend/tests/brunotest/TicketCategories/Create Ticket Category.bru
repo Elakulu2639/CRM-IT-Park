@@ -1,0 +1,46 @@
+meta {
+  name: Create Ticket Category
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/ticket-categories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "category_name": "Technical Support",
+    "description": "Hardware, software, and network issues",
+    "is_active": true
+  }
+}
+
+tests {
+  test("Status code is 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Category created successfully", function () {
+    const body = res.getBody();
+    expect(body.success).to.be.true;
+    expect(body.data.ticket_category).to.be.an('object');
+    expect(body.data.ticket_category.category_name).to.equal('Technical Support');
+    expect(body.data.ticket_category.is_active).to.be.true;
+    
+    if (body.data && body.data.ticket_category && body.data.ticket_category.id) {
+      bru.setEnvVar("category_id", body.data.ticket_category.id);
+    }
+  });
+}
