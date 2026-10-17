@@ -72,4 +72,34 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function getNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role?->role_name === 'System Administrator';
+    }
+
+    public function isCrmManager(): bool
+    {
+        return $this->role?->role_name === 'CRM Manager';
+    }
+
+    public function isBdo(): bool
+    {
+        return $this->role?->role_name === 'Business Development Officer';
+    }
+
+    public function isSupportAgent(): bool
+    {
+        return $this->role?->role_name === 'Support Agent';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
 }
