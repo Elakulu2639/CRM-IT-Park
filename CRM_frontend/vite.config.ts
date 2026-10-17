@@ -2,6 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
+import fs from 'node:fs'
+
+const isDocker = fs.existsSync('/.dockerenv')
+const backendTarget = process.env.VITE_BACKEND_URL || (isDocker ? 'http://nginx:80' : 'http://localhost:8000')
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -17,7 +22,7 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: process.env.VITE_BACKEND_URL || 'http://localhost:8000',
+        target: backendTarget,
         changeOrigin: true,
         secure: false,
       }

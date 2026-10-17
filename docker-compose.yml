@@ -162,6 +162,7 @@ services:
       - ./CRM_frontend:/app
       - /app/node_modules
     environment:
+      - VITE_BACKEND_URL=http://nginx:80
       - VITE_API_BASE_URL=http://localhost:8000/api
     networks:
       - crm-network
