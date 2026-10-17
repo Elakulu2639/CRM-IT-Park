@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Users2,
   Building2,
@@ -16,6 +17,7 @@ import Badge from '../../components/ui/Badge';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const metrics = [
     {
@@ -131,7 +133,7 @@ export const DashboardPage: React.FC = () => {
               variant="primary"
               size="sm"
               leftIcon={<Plus className="w-3.5 h-3.5" />}
-              onClick={() => alert('Lead ingestion module is ready for development!')}
+              onClick={() => navigate('/leads')}
             >
               New Inbound Lead
             </Button>

@@ -4,6 +4,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
 import LoginPage from './features/auth/LoginPage';
 import DashboardPage from './features/dashboard/DashboardPage';
+import LeadsPage from './features/leads/LeadsPage';
 
 export default function App() {
   return (
@@ -18,8 +19,7 @@ export default function App() {
           {/* Protected Routes (Require active authenticated session) */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
-            {/* Fallback routes for navigation placeholders */}
-            <Route path="/leads" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/leads" element={<LeadsPage />} />
             <Route path="/accounts" element={<Navigate to="/dashboard" replace />} />
             <Route path="/contacts" element={<Navigate to="/dashboard" replace />} />
             <Route path="/opportunities" element={<Navigate to="/dashboard" replace />} />
