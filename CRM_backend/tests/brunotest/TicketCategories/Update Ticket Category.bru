@@ -1,0 +1,43 @@
+meta {
+  name: Update Ticket Category
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/ticket-categories/{{category_id}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "category_name": "Technical & IT Support",
+    "description": "Hardware, software, network, and infrastructure issues",
+    "is_active": true
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Category updated successfully", function () {
+    const body = res.getBody();
+    expect(body.success).to.be.true;
+    expect(body.data.ticket_category).to.be.an('object');
+    expect(body.data.ticket_category.category_name).to.equal('Technical & IT Support');
+    expect(body.data.ticket_category.description).to.equal('Hardware, software, network, and infrastructure issues');
+    expect(body.data.ticket_category.is_active).to.be.true;
+  });
+}

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EscalationPolicyController;
 use App\Http\Controllers\Api\PipelineStageController;
 use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\TicketCategoryController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,10 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pipeline-stages', [PipelineStageController::class, 'index']);
+
+    // Ticket Categories — Listing & Details
+    Route::get('/ticket-categories',                   [TicketCategoryController::class, 'index']);
+    Route::get('/ticket-categories/{ticket_category}', [TicketCategoryController::class, 'show']);
 });
 
 /*
@@ -80,6 +85,15 @@ Route::middleware(['auth:sanctum', 'role:System Administrator'])->group(function
         Route::patch('/{escalation_policy}/reminder-threshold', [EscalationPolicyController::class, 'updateReminderThreshold']); // Update reminder threshold specifically
         Route::patch('/{escalation_policy}/status',             [EscalationPolicyController::class, 'toggleStatus']);            // Activate / deactivate policy
         Route::delete('/{escalation_policy}',                   [EscalationPolicyController::class, 'destroy']);                 // Delete policy (if no history)
+    });
+
+    // ------------------------------------------------------------------
+    // Ticket Category Management
+    // ------------------------------------------------------------------
+    Route::prefix('ticket-categories')->group(function () {
+        Route::post('/',                   [TicketCategoryController::class, 'store']);   // Create category
+        Route::put('/{ticket_category}',   [TicketCategoryController::class, 'update']);  // Edit category (includes active status update)
+        Route::delete('/{ticket_category}',[TicketCategoryController::class, 'destroy']); // Delete category (blocked if tickets exist)
     });
 });
 

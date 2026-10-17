@@ -10,13 +10,13 @@ post {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
-
 headers {
   Content-Type: application/json
   Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 body:json {
@@ -27,7 +27,7 @@ body:json {
       { "id": 3, "display_order": 3 },
       { "id": 4, "display_order": 4 },
       { "id": 5, "display_order": 5 },
-      { "id": 6, "display_order": 6 }
+      { "id": 7, "display_order": 7 }
     ]
   }
 }
