@@ -15,6 +15,9 @@ mkdir -p /var/www/CRM_backend/storage/framework/cache/data \
 chown -R www:www /var/www/CRM_backend/storage /var/www/CRM_backend/bootstrap/cache
 chmod -R 775 /var/www/CRM_backend/storage /var/www/CRM_backend/bootstrap/cache
 
+# Discover Laravel packages
+php artisan package:discover --ansi || true
+
 # Run database migrations
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
     echo "Running database migrations..."

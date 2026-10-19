@@ -57,8 +57,16 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-in
 # Copy the rest of the application code
 COPY . .
 
-# Finish composer autoload generation
-RUN composer dump-autoload --optimize --no-dev
+# Ensure bootstrap/cache and storage directories exist and are writable
+RUN mkdir -p /var/www/CRM_backend/bootstrap/cache \
+             /var/www/CRM_backend/storage/framework/cache/data \
+             /var/www/CRM_backend/storage/framework/sessions \
+             /var/www/CRM_backend/storage/framework/views \
+             /var/www/CRM_backend/storage/logs \
+    && chmod -R 777 /var/www/CRM_backend/bootstrap/cache /var/www/CRM_backend/storage
+
+# Finish composer autoload generation safely without triggering runtime scripts during build
+RUN composer dump-autoload --optimize --no-dev --no-scripts
 
 # Copy server configurations
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
