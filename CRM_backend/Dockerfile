@@ -35,7 +35,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 
 # Install Redis extension via PECL
 RUN pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-enable redis \
+    && rm -rf /tmp/pear
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
