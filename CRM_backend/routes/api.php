@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EscalationPolicyController;
+use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\PipelineStageController;
+use App\Http\Controllers\Api\ReferenceDataController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TicketCategoryController;
 use App\Http\Controllers\Api\UserController;
@@ -85,6 +87,23 @@ $registerRoutes = function () {
         // Roles Reference — For assignment and filter dropdowns
         Route::get('/roles', [RoleController::class, 'index']);
 
+        // Reference Data Dropdowns
+        Route::get('/lead-sources', [ReferenceDataController::class, 'leadSources']);
+        Route::get('/lead-categories', [ReferenceDataController::class, 'leadCategories']);
+
+        // Leads Pipeline Management
+        Route::prefix('leads')->group(function () {
+            Route::get('/metrics', [LeadController::class, 'metrics']);
+            Route::get('/check-duplicate', [LeadController::class, 'checkDuplicate']);
+            Route::get('/', [LeadController::class, 'index']);
+            Route::post('/', [LeadController::class, 'store']);
+            Route::get('/{lead}', [LeadController::class, 'show']);
+            Route::put('/{lead}', [LeadController::class, 'update']);
+            Route::patch('/{lead}/status', [LeadController::class, 'updateStatus']);
+            Route::patch('/{lead}/assign', [LeadController::class, 'assign']);
+            Route::post('/{lead}/convert', [LeadController::class, 'convert']);
+            Route::delete('/{lead}', [LeadController::class, 'destroy']);
+        });
         // Ticket Categories — Listing & Details (Viewable by authenticated users)
         Route::get('/ticket-categories',                   [TicketCategoryController::class, 'index']);
         Route::get('/ticket-categories/{ticket_category}', [TicketCategoryController::class, 'show']);
