@@ -27,6 +27,7 @@ import {
   FileText,
   BookOpen,
   PanelLeftClose,
+  UserCog,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -91,6 +92,15 @@ const navSections: NavSection[] = [
       { label: 'Audit Trail', to: '/audit-trail', icon: BookOpen },
     ],
   },
+  {
+    id: 'admin',
+    title: 'System Administration',
+    icon: ShieldCheck,
+    items: [
+      { label: 'User Management', to: '/users', icon: UserCog },
+      { label: 'Roles & Permissions', to: '/roles', icon: Key },
+    ],
+  },
 ];
 
 export const AppShell: React.FC<AppShellProps> = ({
@@ -115,6 +125,7 @@ export const AppShell: React.FC<AppShellProps> = ({
     deals: true,
     support: true,
     reports: false,
+    admin: true,
   });
 
   const userMenuRef = useRef<HTMLDivElement>(null);

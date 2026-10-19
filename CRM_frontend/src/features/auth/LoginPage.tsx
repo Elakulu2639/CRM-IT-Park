@@ -39,6 +39,8 @@ export const LoginPage: React.FC = () => {
         const response = (err as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } }).response;
         const msg = response?.data?.message || response?.data?.errors?.email?.[0] || 'Authentication failed. Please verify your credentials.';
         setErrorMessage(msg);
+      } else if (err && typeof err === 'object' && 'code' in err && (err as { code?: string }).code === 'ECONNABORTED') {
+        setErrorMessage('The authentication server took too long to respond (timeout). Please try again.');
       } else {
         setErrorMessage('Unable to connect to the CRM authentication server. Please check your connection.');
       }
