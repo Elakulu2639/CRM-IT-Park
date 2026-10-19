@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import fs from 'node:fs'
 
 const isDocker = fs.existsSync('/.dockerenv')
-const backendTarget = process.env.VITE_BACKEND_URL || (isDocker ? 'http://nginx:80' : 'http://localhost:8000')
+const backendTarget = process.env.VITE_BACKEND_URL || (isDocker ? 'http://nginx:80' : 'http://127.0.0.1:8000')
 
 // https://vite.dev/config/
 export default defineConfig({

@@ -23,7 +23,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return null;
     }
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    const storedToken = localStorage.getItem('crm_token');
+    const savedUser = localStorage.getItem('crm_user');
+    // If token and user are already in localStorage, render immediately without blocking screen
+    if (storedToken && savedUser) {
+      return false;
+    }
+    // If no token exists, no need to wait, immediately unauthenticated
+    if (!storedToken) {
+      return false;
+    }
+    return true;
+  });
 
   // Synchronize authentication on initial boot
   useEffect(() => {
