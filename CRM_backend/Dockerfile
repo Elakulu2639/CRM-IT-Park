@@ -1,41 +1,27 @@
 FROM php:8.3-fpm-alpine
 
-# Install system dependencies, Nginx and Supervisor
+# Install Nginx, Supervisor, and basic tools
 RUN apk add --no-cache \
     nginx \
     supervisor \
-    postgresql-dev \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    libzip-dev \
-    icu-dev \
-    zip \
-    unzip \
-    git \
     curl \
-    oniguruma-dev \
-    linux-headers \
-    dos2unix \
-    $PHPIZE_DEPS
+    git \
+    unzip \
+    dos2unix
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        pdo \
-        pdo_pgsql \
-        pgsql \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        zip \
-        intl
-
-# Install Redis extension via PECL
-RUN pecl install redis \
-    && docker-php-ext-enable redis
+# Install PHP extensions cleanly and reliably via official installer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions \
+    pdo_pgsql \
+    pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
+    intl \
+    redis
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
