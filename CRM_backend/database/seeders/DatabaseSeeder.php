@@ -33,13 +33,13 @@ class DatabaseSeeder extends Seeder
         $bdoRole = \App\Models\Role::where('role_name', 'Business Development Officer')->first();
 
         User::updateOrCreate(
-            ['email' => 'admin@itpark.gov.et'],
+            ['email' => 'e9710092@gmail.com'],
             [
                 'role_id'            => $adminRole->id,
                 'first_name'         => 'System',
                 'last_name'          => 'Admin',
                 'phone'              => '+251911000000',
-                'password'           => 'password',
+                'password'           => '12345678',
                 'status'             => 'active',
                 'email_verified_at'  => now(),
             ]
