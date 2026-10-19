@@ -60,15 +60,7 @@ Built in strict compliance with **SRS v1.0** and **CRM Database Design v2.0**.
 - **Git** installed
 - **Docker Desktop** (Windows / macOS) or **Docker Engine + Docker Compose** (Linux) running
 
-<<<<<<< HEAD
-*(You do **not** need PHP, Composer, Node.js, or PostgreSQL installed locally on your host machine).*
-=======
-2. **Setup environment files:**
-   ```bash
-   cp .env.example .env
-   cp CRM_backend/.env.example CRM_backend/.env
-   ```
->>>>>>> 66b3e70f54c12bb9bca34f6be8d997187e0ffa89
+*(You do not need PHP, Composer, Node.js, or PostgreSQL installed locally on your host machine when using Docker).*
 
 ### 2. Clone the Repository
 ```bash
