@@ -1,0 +1,33 @@
+services:
+  # Laravel Web Service (REST API)
+  - type: web
+    name: crm-itpark-api
+    runtime: docker
+    dockerfilePath: CRM_backend/Dockerfile
+    dockerContext: CRM_backend
+    plan: free
+    region: ohio
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: APP_NAME
+        value: "Ethiopian IT Park CRM"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://crm-itpark-api.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        sync: false
+      - key: RUN_MIGRATIONS
+        value: "true"
+      - key: RUN_SEEDERS
+        value: "true"
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: QUEUE_CONNECTION
+        value: sync

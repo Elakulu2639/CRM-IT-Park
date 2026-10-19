@@ -30,10 +30,20 @@ class UserService
      */
     public function updateUser(User $user, array $data): User
     {
-        $fillable = ['first_name', 'last_name', 'email', 'phone'];
+        $fillable = ['role_id', 'first_name', 'last_name', 'email', 'phone', 'status'];
 
         if (isset($data['password'])) {
             $fillable[] = 'password';
+        }
+
+        if (isset($data['status'])) {
+            if ($data['status'] === 'inactive') {
+                $data['deactivated_at'] = now();
+                $fillable[] = 'deactivated_at';
+            } elseif ($data['status'] === 'active') {
+                $data['deactivated_at'] = null;
+                $fillable[] = 'deactivated_at';
+            }
         }
 
         $user->update(array_intersect_key($data, array_flip($fillable)));
@@ -42,67 +52,28 @@ class UserService
     }
 
     /**
-     * Activate an inactive user account.
+     * Update user account status (active or inactive).
      */
-    public function activateUser(User $user): User
+    public function setStatus(User $user, string $status): User
     {
-        $user->update([
-            'status'         => 'active',
-            'deactivated_at' => null,
-        ]);
+        DB::transaction(function () use ($user, $status) {
+            if ($status === 'inactive') {
+                $user->update([
+                    'status'         => 'inactive',
+                    'deactivated_at' => now(),
+                ]);
 
-        return $user->load('role');
-    }
-
-    /**
-     * Deactivate a user account.
-     *
-     * When $reassignToUserId is provided, all records currently owned by the
-     * deactivated user are transferred to the target user inside a single DB
-     * transaction.  Additional ownership columns should be added to
-     * reassignOwnedRecords() as CRM modules are built out.
-     *
-     * @param  int|null  $reassignToUserId  ID of the user to receive owned records.
-     */
-    public function deactivateUser(User $user, ?int $reassignToUserId = null): User
-    {
-        DB::transaction(function () use ($user, $reassignToUserId) {
-            if ($reassignToUserId !== null) {
-                $this->reassignOwnedRecords($user->id, $reassignToUserId);
+                // Revoke all active Sanctum tokens so the session ends immediately.
+                $user->tokens()->delete();
+            } else {
+                $user->update([
+                    'status'         => 'active',
+                    'deactivated_at' => null,
+                ]);
             }
-
-            $user->update([
-                'status'         => 'inactive',
-                'deactivated_at' => now(),
-            ]);
-
-            // Revoke all active Sanctum tokens so the session ends immediately.
-            $user->tokens()->delete();
         });
 
         return $user->load('role');
-    }
-
-    /**
-     * Reassign all records owned by $fromUserId to $toUserId.
-     *
-     * As new CRM modules (Leads, Opportunities, Tickets, etc.) are implemented
-     * and their ownership column is confirmed, add the corresponding update
-     * query here so deactivation always leaves data in a consistent state.
-     */
-    private function reassignOwnedRecords(int $fromUserId, int $toUserId): void
-    {
-        DB::table('leads')
-            ->where('assigned_to', $fromUserId)
-            ->update(['assigned_to' => $toUserId]);
-
-        DB::table('opportunities')
-            ->where('assigned_to', $fromUserId)
-            ->update(['assigned_to' => $toUserId]);
-
-        DB::table('tickets')
-            ->where('assigned_to', $fromUserId)
-            ->update(['assigned_to' => $toUserId]);
     }
 
     /**

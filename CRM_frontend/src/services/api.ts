@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_BASE_URL = '/api';
+export const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || '/api';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -8,7 +8,7 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  timeout: 15000,
+  timeout: 60000,
 });
 
 // Request interceptor: attach Sanctum Bearer token

@@ -1,0 +1,49 @@
+meta {
+  name: Reorder Pipeline Stages (Bulk)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/pipeline-stages/reorder
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "stages": [
+      { "id": 1, "display_order": 1 },
+      { "id": 2, "display_order": 2 },
+      { "id": 3, "display_order": 3 },
+      { "id": 4, "display_order": 4 },
+      { "id": 5, "display_order": 5 },
+      { "id": 7, "display_order": 7 }
+    ]
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Stages reordered and returned in new order", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.stages).to.be.an('array');
+    const stages = data.data.stages;
+    for (let i = 1; i < stages.length; i++) {
+      expect(stages[i].display_order).to.be.at.least(stages[i - 1].display_order);
+    }
+  });
+}

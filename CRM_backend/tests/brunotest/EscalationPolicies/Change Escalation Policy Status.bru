@@ -1,0 +1,63 @@
+meta {
+  name: Change Escalation Policy Status
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/escalation-policies/:policy_id/status
+  body: json
+  auth: bearer
+}
+
+params:path {
+  policy_id: {{policy_id}}
+}
+
+script:pre-request {
+  try {
+    if (typeof bru.deleteVar === 'function') {
+      bru.deleteVar("policy_id");
+    }
+    let pathId = null;
+    if (typeof req.getPathVar === 'function') {
+      pathId = req.getPathVar("policy_id");
+    } else if (typeof req.getPathVariable === 'function') {
+      pathId = req.getPathVariable("policy_id");
+    } else if (req.pathVariables && req.pathVariables.policy_id) {
+      pathId = req.pathVariables.policy_id;
+    }
+    if (pathId && !pathId.toString().includes("{{")) {
+      bru.setEnvVar("policy_id", pathId);
+    }
+  } catch (e) {}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "is_active": false
+  }
+}
+
+tests {
+  test("Status code is 200 or 422 if already in that state", function () {
+    expect([200, 422]).to.include(res.getStatus());
+  });
+  
+  if (res.getStatus() === 200) {
+    test("Policy status updated successfully", function () {
+      const data = res.getBody();
+      expect(data.success).to.be.true;
+      expect(data.data.policy.is_active).to.be.false;
+    });
+  }
+}

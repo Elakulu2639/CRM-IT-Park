@@ -38,6 +38,8 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+AGENTS.md
+CLAUDE.md
 
 # Docker / volume data
 pgdata/

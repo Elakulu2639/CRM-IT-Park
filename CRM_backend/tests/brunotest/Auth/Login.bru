@@ -1,0 +1,39 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "email": "e9710092@gmail.com",
+    "password": "12345678"
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Authentication successful and token stored", function () {
+    const data = res.getBody();
+    expect(data.success).to.be.true;
+    expect(data.data.token).to.be.a('string');
+    
+    // Store in both active environment and collection variables
+    bru.setEnvVar("token", data.data.token);
+    bru.setVar("token", data.data.token);
+  });
+}

@@ -7,7 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 
 
-    class OpportunityStageHistory extends Model
+    /**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OpportunityStageHistory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OpportunityStageHistory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OpportunityStageHistory query()
+ * @mixin \Eloquent
+ */
+class OpportunityStageHistory extends Model
 {
     use HasFactory;
 

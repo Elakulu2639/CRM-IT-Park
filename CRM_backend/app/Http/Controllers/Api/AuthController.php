@@ -23,11 +23,11 @@ class AuthController extends Controller
 
         $user = User::with('role')->where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             RateLimiter::hit($request->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials do not match our records.'],
+                'email' => ['Invalid email or password'],
             ]);
         }
 
