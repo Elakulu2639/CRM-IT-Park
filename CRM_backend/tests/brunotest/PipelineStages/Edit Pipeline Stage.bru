@@ -14,6 +14,22 @@ params:path {
   stage_id: {{stage_id}}
 }
 
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "stage_name": "Technical & Security Review",
+    "display_order": 5
+  }
+}
+
 script:pre-request {
   try {
     if (typeof bru.deleteVar === 'function') {
@@ -31,22 +47,6 @@ script:pre-request {
       bru.setEnvVar("stage_id", pathId);
     }
   } catch (e) {}
-}
-
-auth:bearer {
-  token: {{token}}
-}
-
-headers {
-  Content-Type: application/json
-  Accept: application/json
-}
-
-body:json {
-  {
-    "stage_name": "Technical & Security Review",
-    "display_order": 4
-  }
 }
 
 tests {

@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> **Notice for AI Assistants & Developers:** This README is maintained purely as architectural reference to understand collection conventions and environment setup. **There is NO NEED to update this file every time a new API endpoint or `.bru` test is added.** Bruno detects new `.bru` files automatically.
+> **Notice:** This README is maintained purely as architectural reference to understand collection conventions and environment setup. **There is NO NEED to update this file every time a new API endpoint or `.bru` test is added.** Bruno detects new `.bru` files automatically.
 
 # CRM IT Park - Bruno API Collection
 
